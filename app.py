@@ -2,6 +2,7 @@ from flask import Flask, request
 import json
 import libaudio 
 import whisper
+from pool import ThreadPool 
 
 '''
 #起个服务
