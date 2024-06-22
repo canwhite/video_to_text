@@ -48,7 +48,7 @@ priority = "default"
 
 ## warning
 1. 注意mac上生成的c++动态包，需要改为.so文件，否则boost.python无法使用
-2. openai-whiper安装的时候使用poetry add git+https://github.com/openai/whisper.git 
+2. openai-whisper安装的时候使用poetry add git+https://github.com/openai/whisper.git 
 
 
 
