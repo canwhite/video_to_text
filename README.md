@@ -1,6 +1,16 @@
 ## video_to_text
 get audio from video , and transfer to text
 
+
+# run
+```
+poetry shell 
+poetry install
+poetry run python app.py
+```
+
+
+
 ## poetry using
 ```
 env:   
