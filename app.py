@@ -3,6 +3,8 @@ import json
 import libaudio 
 import whisper
 from pool import ThreadPool 
+from request import OpenAITool
+from config import API_KEY
 
 '''
 #起个服务
@@ -41,10 +43,36 @@ if __name__ == '__main__':
     # audioPath = name
     # print(audioPath)
 
-    model = whisper.load_model("base")
+    model = whisper.load_model("small")
     audio = whisper.load_audio("/Users/zack/Desktop/test.mp4")
     audio = whisper.pad_or_trim(audio)
     result = model.transcribe(audio)
-    print(result["text"])
+    # print(result["text"])
+    # full_result = ''
+    # for batch in result["batches"]:
+    #     full_result += ' '.join([segment['text'] for segment in batch['segments']])
+    # print(full_result)
+
+    manual_full_text = ""
+    for segment in result["segments"]:
+        manual_full_text += segment["text"] + " "
+    manual_full_text = manual_full_text.strip()
+    print("手动拼接文本:", manual_full_text)
+
+    # 将以下内容根据上下文纠正错误，并用更加令人舒适的方法表述一下
+    tool = OpenAITool(API_KEY)
+    role_des = "您是一个助手，会讲我给你的文本以一种更加令人舒适的方式讲出来"
+    question_des = "以下是文本内容: " + manual_full_text +""
+    res = tool.request(role_des, question_des)
+    print(res)
+    
+
+
+    
+
+
+
+
+
 
 

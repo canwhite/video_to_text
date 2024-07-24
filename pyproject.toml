@@ -9,6 +9,7 @@ readme = "README.md"
 python = "^3.12"
 flask = "^3.0.3"
 openai-whisper = {git = "https://github.com/openai/whisper.git"}
+openai = "^1.37.0"
 
 
 [build-system]
