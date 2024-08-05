@@ -52,7 +52,7 @@ if __name__ == '__main__':
     # for batch in result["batches"]:
     #     full_result += ' '.join([segment['text'] for segment in batch['segments']])
     # print(full_result)
-
+    print(result)
     manual_full_text = ""
     for segment in result["segments"]:
         manual_full_text += segment["text"] + " "
@@ -65,6 +65,10 @@ if __name__ == '__main__':
     question_des = "以下是文本内容: " + manual_full_text +""
     res = tool.request(role_des, question_des)
     print(res)
+
+
+    # todo，生成图片
+
     
 
 
