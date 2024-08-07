@@ -69,20 +69,13 @@ if __name__ == '__main__':
     sentences = split_text_into_sentences(text)
     print("Sentences:", sentences)
 
-    
+    # 将文本转为音频暂存本地
 
+    # 将sentences生成图片
 
-    #进行分词操作
+    # 合成视频
 
-
-
-
-
-    
-    
-
-
-    # todo，进行分词
+    # 删除本地音频文件
 
 
     
