@@ -1,1 +1,1 @@
-from .index_cn import *
+from .index import *
