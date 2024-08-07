@@ -12,6 +12,9 @@ openai-whisper = {git = "https://github.com/openai/whisper.git"}
 openai = "^1.37.0"
 asyncio = "^3.4.3"
 aiohttp = "^3.10.1"
+nltk = "^3.8.1"
+scikit-learn = "^1.5.1"
+jieba = "^0.42.1"
 
 
 [build-system]

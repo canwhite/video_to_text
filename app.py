@@ -5,7 +5,7 @@ import whisper
 from pool import ThreadPool 
 from request import OpenAITool
 from config import API_KEY
-
+from word_segmentation import split_text_into_sentences
 '''
 #起个服务
 app = Flask(__name__)
@@ -61,13 +61,29 @@ if __name__ == '__main__':
 
     # 将以下内容根据上下文纠正错误，并用更加令人舒适的方法表述一下
     tool = OpenAITool(API_KEY)
-    role_des = "您是一个助手，会讲我给你的文本以一种更加令人舒适的方式讲出来"
+    role_des = "您是一个助手，会讲我给你的文本以一种更加令人舒适的方式讲出来, 注意根据节奏加上标点符号"
     question_des = "以下是文本内容: " + manual_full_text +""
-    res = tool.request(role_des, question_des)
-    print(res)
+    text = tool.request(role_des, question_des)
+
+    # 完成简单分句
+    sentences = split_text_into_sentences(text)
+    print("Sentences:", sentences)
+
+    
 
 
-    # todo，生成图片
+    #进行分词操作
+
+
+
+
+
+    
+    
+
+
+    # todo，进行分词
+
 
     
 

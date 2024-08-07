@@ -4,7 +4,7 @@ from nltk.tokenize import word_tokenize
 from nltk.tag import pos_tag
 from nltk.chunk import ne_chunk
 from sklearn.feature_extraction.text import TfidfVectorizer
-import requests
+# import requests
 
 # 文本预处理
 def preprocess_text(text):
@@ -26,21 +26,20 @@ def extract_keywords(text):
     keywords.sort(key=lambda x: x[1], reverse=True)
     return keywords
 
-# TODO：这一块儿在考虑要用什么API。 还是本地先跑一个什么小模型
-# 生成图片（示例使用Unsplash API）, 
-def generate_image(keyword):
-    url = "https://api.unsplash.com/photos/random"
-    params = {
-        "query": keyword,
-        "client_id": "YOUR_UNSPLASH_API_KEY"
-    }
-    response = requests.get(url, params=params)
-    if response.status_code == 200:
-        data = response.json()
-        image_url = data['urls']['regular']
-        return image_url
-    else:
-        return None
+# 生成图片（示例使用Unsplash API）
+# def generate_image(keyword):
+#     url = "https://api.unsplash.com/photos/random"
+#     params = {
+#         "query": keyword,
+#         "client_id": "YOUR_UNSPLASH_API_KEY"
+#     }
+#     response = requests.get(url, params=params)
+#     if response.status_code == 200:
+#         data = response.json()
+#         image_url = data['urls']['regular']
+#         return image_url
+#     else:
+#         return None
 
 # 主函数
 def main():
@@ -55,9 +54,10 @@ def main():
     print("Keywords:", keywords)
     
     for keyword, score in keywords[:5]:
-        image_url = generate_image(keyword)
-        if image_url:
-            print(f"Keyword: {keyword}, Image URL: {image_url}")
+        print(keyword)
+        # image_url = generate_image(keyword)
+        # if image_url:
+        #     print(f"Keyword: {keyword}, Image URL: {image_url}")
 
 if __name__ == "__main__":
     main()
