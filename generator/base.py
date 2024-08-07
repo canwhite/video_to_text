@@ -37,3 +37,12 @@ if __name__ == '__main__':
     # 使用生成器
     for item in main_generator():
         print(item)
+
+    #PS，补充一点数组操作
+    #--forEach
+    # for index, item in enumerate(my_list):
+    #     print(f"Index: {index}, Value: {item}")
+
+    #--map 
+    # squared_list = [item ** 2 for item in my_list]
+    # print(squared_list)
