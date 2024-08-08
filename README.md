@@ -1,8 +1,11 @@
 ## video_to_text
-get audio from video , and transfer to text
 
+get audio from video , and transfer to text，then optimize the text，           
+generate new audio，then split the text，use single sentence to generate image，                
+finally generate video              
 
 # run
+
 ```
 poetry shell 
 poetry install
@@ -23,13 +26,16 @@ poetry init
 打开虚拟环境：       
 poetry shell   
 
+退出虚拟环境：
+exit
+
 如果有toml文件，可以直接把lib统一安装
 poetry install
 
-安装包
+安装单个包
 poetry add flask [--dev]
 
-移除包
+移除单个包
 poetry remove dep_name
 
 执行脚本

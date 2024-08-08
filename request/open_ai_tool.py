@@ -1,13 +1,7 @@
 from openai import OpenAI
 from config import BASE_URL
-#参数是class
-def singleton(cls):
-    instances = {}
-    def getinstance(*args, **kw):
-        if cls not in instances:
-            instances[cls] = cls(*args, **kw)
-        return instances[cls]
-    return getinstance
+from lib import singleton
+
 
 #装饰
 @singleton

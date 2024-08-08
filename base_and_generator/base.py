@@ -44,5 +44,7 @@ if __name__ == '__main__':
     #     print(f"Index: {index}, Value: {item}")
 
     #--map 
-    # squared_list = [item ** 2 for item in my_list]
-    # print(squared_list)
+    # [expression for item in iterable if condition]
+    # 后边的if condition是可选的，满足条件才会到最终列表
+    # sentences = [sentence.strip() for sentence in sentences if sentence.strip()]
+    

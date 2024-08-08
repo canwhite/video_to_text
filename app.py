@@ -6,6 +6,8 @@ from pool import ThreadPool
 from request import OpenAITool
 from config import API_KEY
 from word_segmentation import split_text_into_sentences
+from text2audio import TTSTool
+
 '''
 #起个服务
 app = Flask(__name__)
@@ -27,6 +29,7 @@ def upload_file():
 '''
 
 
+#  creative process
 if __name__ == '__main__':
     '''
         if you wanna test the api
@@ -65,11 +68,15 @@ if __name__ == '__main__':
     question_des = "以下是文本内容: " + manual_full_text +""
     text = tool.request(role_des, question_des)
 
-    # 完成简单分句
+    # 将文本转为音频暂存本地
+    tts = TTSTool()
+    output_file = "output.wav"
+    tts.tts_to_file(text=text, file_path=output_file)
+
+
+    # 完成分句
     sentences = split_text_into_sentences(text)
     print("Sentences:", sentences)
-
-    # 将文本转为音频暂存本地
 
     # 将sentences生成图片
 

@@ -6,7 +6,7 @@ authors = ["qiaochao <qiaochao@icourt.cc>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.12"
+python = "^3.11.2"
 flask = "^3.0.3"
 openai-whisper = {git = "https://github.com/openai/whisper.git"}
 openai = "^1.37.0"
@@ -15,7 +15,8 @@ aiohttp = "^3.10.1"
 nltk = "^3.8.1"
 scikit-learn = "^1.5.1"
 jieba = "^0.42.1"
-
+tts = { version = "^0.22.0", python = ">=3.9.0,<3.12" }
+pyfunctional = "^1.5.0"
 
 [build-system]
 requires = ["poetry-core"]
