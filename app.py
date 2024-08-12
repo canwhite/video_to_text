@@ -7,7 +7,6 @@ from request import OpenAITool
 from config import API_KEY
 from word_segmentation import split_text_into_sentences
 from text2audio import TTSTool
-import os
 from image_gen import batch_call
 
 '''
