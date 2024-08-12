@@ -8,6 +8,7 @@ from config import API_KEY
 from word_segmentation import split_text_into_sentences
 from text2audio import TTSTool
 import os
+from image_gen import batch_call
 
 '''
 #起个服务
@@ -80,21 +81,12 @@ if __name__ == '__main__':
     print("Sentences:", sentences)
 
     # 将sentences生成图片   
-    
-
-
-
-
-    
-
-
-
-
+    batch_call(sentences)
 
 
     # 合成视频
 
-    # 删除本地音频文件
+    # 删除本地音频文件和本地图片
 
 
     

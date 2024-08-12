@@ -16,7 +16,7 @@ def main_generator():
     yield 'B'
 
 
-if __name__ == '__main__':
+def test_yield():
 
     gen = sub_generator()
     # 手动调用生成器
@@ -31,12 +31,71 @@ if __name__ == '__main__':
     print(next(main))
     print(next(main))
 
-
-    print('-----------------')
-
     # 使用生成器
     for item in main_generator():
         print(item)
+
+    print('-----------------')
+
+'''
+TODO: 工厂方法，装饰器，发布订阅, 命令模式
+'''
+class Product:
+    def __init__(self, name):
+        self.name = name
+    # __str__ 方法是 Python 中的一个特殊方法，用于定义对象的字符串表示形式。
+    # 当你使用 print() 函数或调用 str() 函数来转换对象时，Python 会自动调用该对象的 __str__ 方法。
+    def __str__(self):
+        return f"Product: {self.name}"
+
+class ProductFactory:
+    @staticmethod
+    def create_product(product_type):
+        if product_type == "A":
+            return Product("Type A")
+        elif product_type == "B":
+            return Product("Type B")
+        else:
+            raise ValueError("Unknown product type")
+
+
+# product_a = ProductFactory.create_product("A")
+# print(product_a)
+
+# product_b = ProductFactory.create_product("B")
+# print(product_b)
+
+
+'''
+一个发布订阅的例子
+'''
+
+class PubSub:
+    def __init__(self):
+        self.subscribers = {}
+
+    def subscribe(self, event_type, fn):
+        if not event_type in self.subscribers:
+            self.subscribers[event_type] = []
+        self.subscribers[event_type].append(fn)
+
+    def publish(self, event_type, data):
+        if event_type in self.subscribers:
+            for fn in self.subscribers[event_type]:
+                fn(data)
+
+# pubsub = PubSub()
+# pubsub.subscribe('event_name', callback_function)
+# pubsub.publish('event_name', data)
+
+
+if __name__ == '__main__':
+
+    test_yield()
+
+
+
+
 
     #PS，补充一点数组操作
     #--forEach
