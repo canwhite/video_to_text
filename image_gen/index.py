@@ -19,7 +19,7 @@ def simple_call(input_prompt,index):
         # save file to current directory
         for result in rsp.output.results:
             file_name = f"image_{index}.png"
-            with open('./%s' % file_name, 'wb+') as f:
+            with open('./assets/images/%s' % file_name, 'wb+') as f:
                 f.write(requests.get(result.url).content)
     else:
         print('Failed, status_code: %s, code: %s, message: %s' %

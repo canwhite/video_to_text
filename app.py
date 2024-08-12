@@ -71,11 +71,11 @@ if __name__ == '__main__':
 
     # 将文本转为音频暂存本地
     tts = TTSTool()
-    output_file = "output.wav"
+    output_file = "./assets/audios/output.wav"
     tts.tts_to_file(text=text, file_path=output_file)
 
 
-    # 完成分句
+    # 完成分词
     sentences = split_text_into_sentences(text)
     print("Sentences:", sentences)
 
@@ -84,6 +84,9 @@ if __name__ == '__main__':
 
 
     # 合成视频
+    
+
+
 
     # 删除本地音频文件和本地图片
 
