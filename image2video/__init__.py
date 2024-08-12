@@ -1,1 +1,1 @@
-from .index import images_to_video_with_audio
+from .index import images_to_video_with_audio,cleanup_assets

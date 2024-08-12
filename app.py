@@ -8,6 +8,7 @@ from config import API_KEY
 from word_segmentation import split_text_into_sentences
 from text2audio import TTSTool
 from image_gen import batch_call
+from image2video import images_to_video_with_audio,cleanup_assets
 
 '''
 #起个服务
@@ -46,7 +47,7 @@ if __name__ == '__main__':
     # print(name)
     # audioPath = name
     # print(audioPath)
-
+    '''
     model = whisper.load_model("small")
     audio = whisper.load_audio("/Users/zack/Desktop/test.mp4")
     audio = whisper.pad_or_trim(audio)
@@ -82,11 +83,12 @@ if __name__ == '__main__':
     # 将sentences生成图片   
     batch_call(sentences)
 
-
+    '''
     # 合成视频
-    
+    images_to_video_with_audio("./assets/images", "./assets/audios/output.wav", "./output.mp4")
 
-
+    # 调用清理方法
+    cleanup_assets("./assets/images", "./assets/audios")
 
     # 删除本地音频文件和本地图片
 
