@@ -10,6 +10,7 @@ def split_text_into_sentences(text):
     返回:
     list: 拆分后的句子列表。
     """
+    
     # 使用正则表达式拆分句子，并忽略标点符号
     # (?<=...) 是一个正向后视断言，表示匹配位置的前面必须是括号内的内容。
     sentences = re.split(r'(?<=。|！|？|；|…|”|）|】|》)', text)

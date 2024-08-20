@@ -9,7 +9,7 @@ from word_segmentation import split_text_into_sentences
 from text2audio import TTSTool
 from image_gen import batch_call
 from image2video import images_to_video_with_audio,cleanup_assets
-
+import sys
 
 '''
 #起个服务
@@ -49,8 +49,6 @@ if __name__ == '__main__':
     # audioPath = name
     # print(audioPath)
 
-
-    ''' 
     model = whisper.load_model("medium")
     audio = whisper.load_audio("/Users/zack/Desktop/test.mp4")
     # load audio and pad/trim it to fit 30 seconds
@@ -66,9 +64,13 @@ if __name__ == '__main__':
 
     # 将以下内容根据上下文纠正错误，并用更加令人舒适的方法表述一下
     tool = OpenAITool(API_KEY)
-    role_des = "您是一个助手，会讲我给你的文本以一种更加令人舒适的方式讲出来, 注意根据节奏加上标点符号"
+    role_des = "您是一个文本助手，会讲我给你的文本以一种更加令人舒适的方式讲出来, 除了《》不用加之后，其他按照文章节奏加上标点符号"
     question_des = "以下是文本内容: " + manual_full_text +""
     text = tool.request(role_des, question_des)
+    print(text)
+
+    # 打断一下
+    # sys.exit("Generation process stopped by user.")
 
     # 将文本转为音频暂存本地
     tts = TTSTool()
@@ -80,13 +82,9 @@ if __name__ == '__main__':
     sentences = split_text_into_sentences(text)
     print("Sentences:", sentences)
 
-    '''
-
-
     #test ['本期《致富经》', '将带您深入探访黑水蛙村，揭秘这个小山村是如何借助异形养殖，踏上致富之路的。', '在卡皮巴拉村的恐龙养殖业取得巨大成功之后，黑水蛙村也坚定了产业升级的决心。']
     # 将sentences生成图片   
-    test_sentences = ['本期《致富经》', '将带您深入探访黑水蛙村，揭秘这个小山村是如何借助异形养殖，踏上致富之路的。']
-    batch_call(test_sentences)
+    batch_call(sentences)
 
     # 合成视频
     # TODO，这里需要改成并发实现
