@@ -3,12 +3,13 @@ import json
 import libaudio 
 import whisper
 from pool import ThreadPool 
-from request import OpenAITool
+from deepseek import OpenAITool
 from config import API_KEY
 from word_segmentation import split_text_into_sentences
 from text2audio import TTSTool
 from image_gen import batch_call
 from image2video import images_to_video_with_audio,cleanup_assets
+
 
 '''
 #起个服务
@@ -48,15 +49,14 @@ if __name__ == '__main__':
     # audioPath = name
     # print(audioPath)
 
-    model = whisper.load_model("small")
+
+    ''' 
+    model = whisper.load_model("medium")
     audio = whisper.load_audio("/Users/zack/Desktop/test.mp4")
+    # load audio and pad/trim it to fit 30 seconds
     audio = whisper.pad_or_trim(audio)
     result = model.transcribe(audio)
-    # print(result["text"])
-    # full_result = ''
-    # for batch in result["batches"]:
-    #     full_result += ' '.join([segment['text'] for segment in batch['segments']])
-    # print(full_result)
+
     print(result)
     manual_full_text = ""
     for segment in result["segments"]:
@@ -80,20 +80,21 @@ if __name__ == '__main__':
     sentences = split_text_into_sentences(text)
     print("Sentences:", sentences)
 
+    '''
+
+
+    #test ['本期《致富经》', '将带您深入探访黑水蛙村，揭秘这个小山村是如何借助异形养殖，踏上致富之路的。', '在卡皮巴拉村的恐龙养殖业取得巨大成功之后，黑水蛙村也坚定了产业升级的决心。']
     # 将sentences生成图片   
-    batch_call(sentences)
+    test_sentences = ['本期《致富经》', '将带您深入探访黑水蛙村，揭秘这个小山村是如何借助异形养殖，踏上致富之路的。']
+    batch_call(test_sentences)
 
     # 合成视频
+    # TODO，这里需要改成并发实现
     images_to_video_with_audio("./assets/images", "./assets/audios/output.wav", "./output.mp4")
 
     # 调用清理方法
     cleanup_assets("./assets/images", "./assets/audios")
 
-
-    
-
-
-    
 
 
 

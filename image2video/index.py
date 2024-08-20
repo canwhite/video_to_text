@@ -34,10 +34,15 @@ def images_to_video_with_audio(image_folder, audio_file, output_video, fps=30):
     if not os.path.exists(audio_file):
         raise FileNotFoundError(f"音频文件 {audio_file} 不存在")
 
-    # 获取图片文件列表
-    image_files = sorted(glob.glob(os.path.join(image_folder, '*.png')))
+    # 获取图片文件列表，按照图片编号排序
+    image_files = sorted(glob.glob(os.path.join(image_folder, '*.png')), key=lambda x: int(os.path.basename(x).split('.')[0].split('_')[1]))
+    print(image_files);
     if not image_files:
         raise FileNotFoundError(f"图片文件夹 {image_folder} 中没有找到图片文件")
+
+    # image_files = sorted(glob.glob(os.path.join(image_folder, '*.png')))
+    # if not image_files:
+    #     raise FileNotFoundError(f"图片文件夹 {image_folder} 中没有找到图片文件")
 
     # 获取音频时长
     audio_duration = get_audio_duration(audio_file)

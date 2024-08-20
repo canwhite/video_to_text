@@ -3,7 +3,8 @@ from urllib.parse import urlparse, unquote
 from pathlib import PurePosixPath
 import requests
 import dashscope
-
+from pool import ThreadPool
+import time
 
 model = "flux-schnell"
 client = dashscope.ImageSynthesis;
@@ -25,11 +26,45 @@ def simple_call(input_prompt,index):
         print('Failed, status_code: %s, code: %s, message: %s' %
               (rsp.status_code, rsp.code, rsp.message))
 
-# 命令模式，给到命令，封装执行
+'''
+#need to:   
+import threading 
+
 def batch_call(prompts):
+    threads = []
     for index, prompt in enumerate(prompts):
         print(f"Processing prompt: {prompt}")
-        simple_call(prompt,index)
+
+        thread = threading.Thread(target=simple_call, args=(prompt, index))
+        threads.append(thread)
+        thread.start()
+
+    for thread in threads:
+        thread.join()
+
+'''
+
+
+# 命令模式，给到命令，封装执行
+def batch_call(prompts, num_threads=5):
+    thread_pool = ThreadPool(num_threads)
+    results = []
+    for index, prompt in enumerate(prompts):
+        print(f"Processing prompt: {prompt}")
+        res = thread_pool.apply(simple_call, (prompt, index))
+        results.append(res)
+        # need to import time
+        # time.sleep(1)
+
+    thread_pool.close()  # 阻止向线程池中添加新的任务
+    thread_pool.join()   # 等待所有任务完成
+
+    for res in results:
+        file_name = res.get()
+        if file_name:
+            print(f"Generated image: {file_name}")
+    # for res in results:
+    #     res.get()
 
 
 
