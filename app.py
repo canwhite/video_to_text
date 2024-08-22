@@ -38,10 +38,12 @@ def get_graph_post_from_video(video_path):
     save_new_audio_from_text(text)
     # 完成分词
     sentences = split_text_into_sentences(text)
+    # TODO,抽取图片，组成文章
 
-    
 
-
+def get_text_from_video_or_audio(video_path):
+    base_text = get_base_text(video_path)
+    return base_text
 
 
 def get_graph_video_from_video(video_path):
