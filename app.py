@@ -31,6 +31,17 @@ def upload_file():
     return 'success'
 '''
 
+def get_graph_post_from_video(video_path):
+
+    base_text = get_base_text(video_path)
+    text = get_optimize_text(base_text)
+    save_new_audio_from_text(text)
+    # 完成分词
+    sentences = split_text_into_sentences(text)
+
+    
+
+
 
 
 def get_graph_video_from_video(video_path):
