@@ -32,6 +32,29 @@ def upload_file():
 '''
 
 
+
+def get_graph_video_from_video(video_path):
+
+    # print(audioPath)
+    base_text = get_base_text(video_path)
+
+    text = get_optimize_text(base_text)
+
+    save_new_audio_from_text(text)
+
+    # 完成分词
+    sentences = split_text_into_sentences(text)
+
+    batch_call(sentences)
+
+    # TOOD, 阿里百炼暂时不支持并发
+    images_to_video_with_audio("./assets/images", "./assets/audios/output.wav", "./output.mp4")
+
+    # 调用清理方法
+    cleanup_assets("./assets/images", "./assets/audios")
+
+
+
 #  creative process
 if __name__ == '__main__':
     '''
@@ -47,51 +70,9 @@ if __name__ == '__main__':
     # name =  libaudio.get_audio("/Users/zack/Desktop/test.mp4")
     # print(name)
     # audioPath = name
-    # print(audioPath)
+    video_path = "/Users/zack/Desktop/test.mp4"
+    get_graph_video_from_video(video_path)
 
-    model = whisper.load_model("medium")
-    audio = whisper.load_audio("/Users/zack/Desktop/test.mp4")
-    # load audio and pad/trim it to fit 30 seconds
-    audio = whisper.pad_or_trim(audio)
-    result = model.transcribe(audio)
-
-    print(result)
-    manual_full_text = ""
-    for segment in result["segments"]:
-        manual_full_text += segment["text"] + " "
-    manual_full_text = manual_full_text.strip()
-    print("手动拼接文本:", manual_full_text)
-
-    # 将以下内容根据上下文纠正错误，并用更加令人舒适的方法表述一下
-    tool = OpenAITool(API_KEY)
-    role_des = "您是一个文本助手，会讲我给你的文本以一种更加令人舒适的方式讲出来, 除了《》不用加之后，其他按照文章节奏加上标点符号"
-    question_des = "以下是文本内容: " + manual_full_text +""
-    text = tool.request(role_des, question_des)
-    print(text)
-
-    # 打断一下
-    # sys.exit("Generation process stopped by user.")
-
-    # 将文本转为音频暂存本地
-    tts = TTSTool()
-    output_file = "./assets/audios/output.wav"
-    tts.tts_to_file(text=text, file_path=output_file)
-
-
-    # 完成分词
-    sentences = split_text_into_sentences(text)
-    print("Sentences:", sentences)
-
-    #test ['本期《致富经》', '将带您深入探访黑水蛙村，揭秘这个小山村是如何借助异形养殖，踏上致富之路的。', '在卡皮巴拉村的恐龙养殖业取得巨大成功之后，黑水蛙村也坚定了产业升级的决心。']
-    # 将sentences生成图片   
-    batch_call(sentences)
-
-    # 合成视频
-    # TODO，这里需要改成并发实现
-    images_to_video_with_audio("./assets/images", "./assets/audios/output.wav", "./output.mp4")
-
-    # 调用清理方法
-    cleanup_assets("./assets/images", "./assets/audios")
 
 
 
