@@ -21,6 +21,7 @@ replicate = "^0.31.0"
 dashscope = "^1.20.3"
 requests = "^2.32.3"
 aiomysql = "^0.2.0"
+peewee-async = "^0.12.1"
 
 [build-system]
 requires = ["poetry-core"]

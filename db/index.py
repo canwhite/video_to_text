@@ -85,6 +85,7 @@ async def test_example(db):
     users = []
     for row in result:
         user = User(user_id=row[0], created_at=row[1], updated_at=row[2], deleted_at=row[3], name=row[4], age=row[5])
+        # 数组操作
         users.append(user)
     
     logger.info(f"Users: {users}")
