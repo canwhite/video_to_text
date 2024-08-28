@@ -66,7 +66,7 @@ def upload_video():
     return 'Video processed successfully', 200
 
 
-#  creative process
+#  creative process，这里是服务员
 if __name__ == '__main__':
     '''
         if you wanna test the api
