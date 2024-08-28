@@ -1,8 +1,7 @@
-from lib import singleton
+from pattern import Singleton
 from TTS.api import TTS
 
-
-@singleton
+@Singleton
 class TTSTool():
     def __init__(self):
         # tts_models/en/ljspeech/tacotron2-DDC

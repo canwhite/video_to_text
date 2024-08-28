@@ -1,10 +1,10 @@
 from openai import OpenAI
 from config import BASE_URL
-from lib import singleton
+from pattern import Singleton
 
 
 #装饰
-@singleton
+# @singleton
 class OpenAITool:
     def __init__(self,api_key):
         self.api_key = api_key

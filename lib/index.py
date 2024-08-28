@@ -1,4 +1,11 @@
 import whisper
+from deepseek import OpenAITool
+from config import API_KEY
+from word_segmentation import split_text_into_sentences
+from text2audio import TTSTool
+from image_gen import batch_call
+from image2video import images_to_video_with_audio,cleanup_assets
+
 
 model = whisper.load_model("medium")
 
@@ -25,7 +32,7 @@ def get_base_text(video_path):
 def get_optimize_text(base_text):
     tool = OpenAITool(API_KEY)
     role_des = "您是一个文本助手，会讲我给你的文本以一种更加令人舒适的方式讲出来, 除了《》不用加之后，其他按照文章节奏加上标点符号"
-    question_des = "以下是文本内容: " + manual_full_text +""
+    question_des = "以下是文本内容: " + base_text +""
     text = tool.request(role_des, question_des)
     return text
 

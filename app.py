@@ -1,35 +1,13 @@
 from flask import Flask, request
 import json
 import libaudio 
-import whisper
-from pool import ThreadPool 
-from deepseek import OpenAITool
 from config import API_KEY
 from word_segmentation import split_text_into_sentences
-from text2audio import TTSTool
 from image_gen import batch_call
 from image2video import images_to_video_with_audio,cleanup_assets
 import sys
+from lib import *
 
-'''
-#起个服务
-app = Flask(__name__)
-# 默认是get
-@app.route('/')
-def hello_world():
-    # data = json.loads(request.get_data())
-    # prompt  = data.get('prompt')
-    return 'Hello World!'
-
-
-@app.route('/upload', methods=['POST'])
-def upload_file():
-    # 获取文件
-    file = request.files.get('file')
-    # 保存文件
-    file.save('test.mp3')
-    return 'success'
-'''
 
 def get_graph_post_from_video(video_path):
 
@@ -39,7 +17,7 @@ def get_graph_post_from_video(video_path):
     # 完成分词
     sentences = split_text_into_sentences(text)
     # TODO,抽取图片，组成文章
-
+    
 
 def get_text_from_video_or_audio(video_path):
     base_text = get_base_text(video_path)
@@ -68,6 +46,26 @@ def get_graph_video_from_video(video_path):
 
 
 
+
+# 这里的 __name__ 取得是当前模块的值。当模块被直接运行时，__name__ 的值为 "__main__"，当模块被作为库导入时，__name__ 的值为模块名。
+app = Flask(__name__)
+
+@app.route('/upload_video', methods=['POST'])
+def upload_video():
+    # 获取上传的视频文件
+    video_file = request.files.get('video')
+    if not video_file:
+        return 'No video file uploaded', 400
+    
+    # 保存视频文件到本地
+    video_path = "./uploads/video.mp4"
+    video_file.save(video_path)
+    
+    # 处理视频文件
+    get_graph_video_from_video(video_path)
+    return 'Video processed successfully', 200
+
+
 #  creative process
 if __name__ == '__main__':
     '''
@@ -87,9 +85,8 @@ if __name__ == '__main__':
     get_graph_video_from_video(video_path)
 
 
-
-
-
+    # app.run(port=8000, debug=True)
+    
 
 
 
