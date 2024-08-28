@@ -18,7 +18,7 @@ def get_graph_post_from_video(video_path):
     sentences = split_text_into_sentences(text)
     # TODO,抽取图片，组成文章
     
-
+ 
 def get_text_from_video_or_audio(video_path):
     base_text = get_base_text(video_path)
     return base_text
@@ -64,6 +64,8 @@ def upload_video():
     # 处理视频文件
     get_graph_video_from_video(video_path)
     return 'Video processed successfully', 200
+
+
 
 
 #  creative process，这里是服务员
