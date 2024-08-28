@@ -61,9 +61,34 @@ class Database:
             logger.error(f"Error executing query: {e}")
             raise
 
+# model
+class User:
+    def __init__(self, user_id, created_at, updated_at, deleted_at, name, age):
+        self.user_id = user_id
+        self.created_at = created_at
+        self.updated_at = updated_at
+        self.deleted_at = deleted_at
+        self.name = name
+        self.age = age
+    
+
+    def __repr__(self):
+        return (f"User(user_id={self.user_id}, created_at={self.created_at}, "
+                f"updated_at={self.updated_at}, deleted_at={self.deleted_at}, "
+                f"name={self.name}, age={self.age})")
+
+# orm
 async def test_example(db):
     result = await db.execute("SELECT * FROM users")
     logger.info(f"Query result: {result}")
+
+    users = []
+    for row in result:
+        user = User(user_id=row[0], created_at=row[1], updated_at=row[2], deleted_at=row[3], name=row[4], age=row[5])
+        users.append(user)
+    
+    logger.info(f"Users: {users}")
+
 
 async def main():
 
@@ -88,4 +113,6 @@ async def main():
     async with Database() as db:
         await test_example(db)
 
-asyncio.run(main())
+
+if __name__ == "__main__":
+    asyncio.run(main())
