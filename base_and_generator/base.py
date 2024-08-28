@@ -102,6 +102,7 @@ if __name__ == '__main__':
     # for index, item in enumerate(my_list):
     #     print(f"Index: {index}, Value: {item}")
 
+
     #--map 
     # [expression for item in iterable if condition]
     # 后边的if condition是可选的，满足条件才会到最终列表
