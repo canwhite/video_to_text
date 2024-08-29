@@ -1,119 +1,154 @@
 import asyncio
-import aiomysql
-import logging
-# from config import DB_CONFIG
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+from sqlalchemy.orm import declarative_base,sessionmaker
+from sqlalchemy import Column
+from sqlalchemy import BigInteger, String
+from sqlalchemy import select, text
 import os
+from urllib.parse import quote_plus
+# 数据库URL
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+encoded_password = quote_plus(os.getenv('SQL_PW'))
 
 
-class Database:
-    def __init__(self, host="127.0.0.1", user="root", password = os.getenv("SQL_PW"), db="test", port=3306):
-        self.host = host
-        self.user = user
-        self.password = password
-        self.db = db
-        self.port = port
-        self.conn = None
-        self.cursor = None
-    
+# 主义这里的mysql+aiomysql，制定了sql操作的驱动
+DATABASE_URL = "mysql+aiomysql://{username}:{password}@{ip}:{port}/{db_name}?charset=utf8".format(
+            username="root",
+            password=encoded_password,
+            ip="127.0.0.1",
+            port=3306,
+            db_name="test"
+        )
+        
+# 创建异步引擎
+engine = create_async_engine(DATABASE_URL, echo=True)
+
+# 创建异步会话
+async_session = sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
+
+
+# 创建基类
+Base = declarative_base()
+
+# 根据基类创建模型
+class User(Base):
+    __tablename__ = 't_user'
+    id = Column(BigInteger, primary_key=True, autoincrement=True)
+    username = Column(String(length=6), unique=True, comment='名字')
+
+
+async def get_user():
+    async with async_session() as session:
+        async with session.begin():
+            # 查询用户
+            user = await session.get(User, 1)
+            print(user.username)
+
+
+async def create_user(username):
+    async with async_session() as session:
+        async with session.begin():
+            # 创建新用户
+            new_user = User(username=username)
+            session.add(new_user)
+            await session.commit()
+
+
+# 获取所有users
+async def get_all_users():
+    async with async_session() as session:
+        async with session.begin():
+            # 查询所有用户
+            result = await session.execute(select(User))
+            users = result.scalars().all()
+            for user in users:
+                print(user.id, user.username)
+
+
+async def get_all_users_by_sql():
+    async with async_session() as session:
+        async with session.begin():
+            # 查询所有用户
+            result = await session.execute(text("select * from t_user"))
+            users = result.fetchall()
+            users_list = []
+            for user in users:
+                user_obj = User(id=user[0], username=user[1])
+                print(user_obj.id, user_obj.username)
+                users_list.append(user_obj)
+
+
+async def update_user(user_id, new_username):
+    async with async_session() as session:
+        async with session.begin():
+            # 获取用户
+            user = await session.get(User, user_id)
+            if user:
+                # 更新用户名
+                user.username = new_username
+                await session.commit()
+                print(f"User {user_id} updated with new username: {new_username}")
+            else:
+                print(f"User {user_id} not found")
+
+
+
+async def delete_user(user_id):
+    async with async_session() as session:
+        async with session.begin():
+            # 获取用户
+            user = await session.get(User, user_id)
+            if user:
+                # 删除用户
+                await session.delete(user)
+                await session.commit()
+                print(f"User {user_id} deleted")
+            else:
+                print(f"User {user_id} not found")
+
+
+
+async def init_table():
     """
-    __aenter__ 和 __aexit__ 是 Python 中用于实现上下文管理器的特殊方法。
-        __aenter__ 方法在进入上下文管理器时被调用，通常用于初始化资源，例如打开文件或连接数据库。
-        __aexit__ 方法在退出上下文管理器时被调用，通常用于清理资源，例如关闭文件或断开数据库连接。
-    这两个方法通常与 `async with` 语句一起使用，以确保资源在异步操作中正确地被管理和释放。
+    begin 方法在 SQLAlchemy 中用于开始一个事务。在异步上下文中，使用 `async with session.begin()` 可以确保在进入 `async with` 块时自动开始一个事务，
+    # 并在退出块时自动提交事务（如果事务成功）或回滚事务（如果发生异常）。
+    
+    具体来说：
+    - 进入 `async with session.begin()` 块时，事务开始。
+    - 在块内执行的所有数据库操作都在同一个事务中。
+    - 如果块内的所有操作都成功，事务将自动提交。
+    - 如果块内发生异常，事务将自动回滚，确保数据的一致性。
     """
-    async def __aenter__(self):
-        await self.connect()
-        return self
+    async with engine.begin() as conn:
+        # 删除所有表的操作是为了确保数据库结构的初始化。如果不删除所有表，可能会导致表结构不一致或遗留旧表的问题。
+        # 但是，删除所有表会清除所有数据，因此在生产环境中应谨慎使用。如果不需要删除所有表，可以跳过这一步。
+        # 如果你确定不需要删除所有表，可以注释掉或删除以下这行代码：
+        # await conn.run_sync(Base.metadata.drop_all)
 
-    async def __aexit__(self, exc_type, exc, tb):
-        await self.close()
+        # 创建所有表,已经有的不会再创建
+        await conn.run_sync(Base.metadata.create_all)
 
-    async def connect(self):
-        if not self.conn or self.conn.closed:
-            logger.info("Connecting to the database...")
-            self.conn = await aiomysql.connect(
-                host=self.host,
-                user=self.user,
-                password=self.password,
-                db=self.db,
-                port=self.port,
-                loop=asyncio.get_event_loop()
-            )
-            self.cursor = await self.conn.cursor()
-            logger.info("Connected to the database.")
-
-    async def close(self):
-        if self.cursor:
-            await self.cursor.close()
-        if self.conn:
-            self.conn.close()
-        logger.info("Database connection closed.")
-
-    async def execute(self, query):
-        try:
-            await self.cursor.execute(query)
-            result = await self.cursor.fetchall()
-            return result
-        except Exception as e:
-            logger.error(f"Error executing query: {e}")
-            raise
-
-# model
-class User:
-    def __init__(self, user_id, created_at, updated_at, deleted_at, name, age):
-        self.user_id = user_id
-        self.created_at = created_at
-        self.updated_at = updated_at
-        self.deleted_at = deleted_at
-        self.name = name
-        self.age = age
     
 
-    def __repr__(self):
-        return (f"User(user_id={self.user_id}, created_at={self.created_at}, "
-                f"updated_at={self.updated_at}, deleted_at={self.deleted_at}, "
-                f"name={self.name}, age={self.age})")
 
-# orm
-async def test_example(db):
-    result = await db.execute("SELECT * FROM users")
-    logger.info(f"Query result: {result}")
-
-    users = []
-    for row in result:
-        user = User(user_id=row[0], created_at=row[1], updated_at=row[2], deleted_at=row[3], name=row[4], age=row[5])
-        # 数组操作
-        users.append(user)
-    
-    logger.info(f"Users: {users}")
+async def init_db():
 
 
-async def main():
+    init_table()
 
-    '''
-        config =  {
-            "host": "127.0.0.1",
-            "user": "root",
-            "password": os.getenv("SQL_PW")
-            "db": "test",
-            "port": 3306
-        }
-        # 用一个obj代替分别传参, ** 表示解包，
-        # ** 操作符主要用于解包字典。它可以将字典中的键值对解包成关键字参数传递给函数。
-        # 如果你有其他类型的数据结构，比如列表或元组，你可以使用 * 操作符来解包它们，
-        # 但这通常用于位置参数而不是关键字参数。
+    # await create_user("李四")
+    await get_user()
+    # await get_all_users()
 
-        async with Database(**DB_CONFIG) as db:
-            await test_example(db)
-    '''
+    await get_all_users()
+
+    await get_all_users_by_sql()
+
+    # 这行代码 `await engine.dispose()` 用于关闭数据库引擎。
+    # 在异步编程中，确保资源正确释放是非常重要的。关闭数据库引擎可以释放相关的资源，避免资源泄漏。
+    await engine.dispose()
 
 
-    async with Database() as db:
-        await test_example(db)
 
-
-if __name__ == "__main__":
-    asyncio.run(main())
+if __name__ == '__main__':
+    asyncio.run(init_db())
